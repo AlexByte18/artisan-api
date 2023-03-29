@@ -37,14 +37,22 @@ export class ProductsService {
     }
   }
 
-  findAll(paginationDto:PaginationDto) {
+  async findAll(paginationDto:PaginationDto) {
 
     const {limit = 10 , offset = 0} = paginationDto
 
-    return this.productRepository.find({
+    const products = await this.productRepository.find({
       take: limit,
-      skip: offset
+      skip: offset,
+      relations: {
+        images: true
+      }
     })
+
+    return products.map( product => ({
+      ...product,
+      images: product.images.map( img => img.url )
+    }))
   }
 
   async findOne(term: string) {
@@ -54,18 +62,29 @@ export class ProductsService {
     if ( isUUID(term) ) {
       product = await this.productRepository.findOneBy({ id:term })
     } else {
-      const queryBuilder = this.productRepository.createQueryBuilder();
+      const queryBuilder = this.productRepository.createQueryBuilder('product');
 
       product = await queryBuilder.where(`UPPER(title) =:title or slug =:slug`, {
         title: term.toUpperCase(),
         slug: term.toLowerCase()
-      }).getOne();
+      })
+      .leftJoinAndSelect('product.images', 'productImages')
+      .getOne();
     }
 
     if ( !product )
       throw new NotFoundException(`Product with ${ term } not found`)
     
     return product
+  }
+
+  async findOnePlane( term:string ) {
+    const { images = [], ...rest } = await this.findOne( term )
+    return {
+      ...rest,
+      images: images.map( image => image.url )
+    }
+
   }
 
   async update(id: string, updateProductDto: UpdateProductDto) {
