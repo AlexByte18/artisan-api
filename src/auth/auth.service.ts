@@ -32,7 +32,7 @@ export class AuthService {
 
       return {
         ...user,
-        toke: this.getJwtToken({ id: user.id })
+        token: this.getJwtToken({ id: user.id })
       }
 
     } catch (error) {
@@ -57,7 +57,7 @@ export class AuthService {
 
     return {
       ...user,
-      toke: this.getJwtToken({ id: user.id })
+      token: this.getJwtToken({ id: user.id })
     }
   }
 
