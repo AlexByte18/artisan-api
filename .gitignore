@@ -37,3 +37,4 @@ lerna-debug.log*
 
 # Custom
 .env
+.vscode/settings.json
