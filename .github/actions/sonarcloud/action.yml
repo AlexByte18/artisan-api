@@ -1,0 +1,28 @@
+name: sonarcloud
+description: SonarCloud Scan action
+inputs:
+  sonar-token:
+    description: sonarToken
+    required: true
+  report-path:
+    description: report Path
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+    - name: Download coverage data for artisan-api
+      uses: actions/download-artifact@v4
+      with:
+        path: ./components/artisan-api/coverage
+        name: artisan-api-test-coverage
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarqube-scan-action@v4.2.0
+      env:
+        SONAR_TOKEN: ${{inputs.sonar-token}}
+      with:
+        args: >
+          -Dsonar.scm.revision=${{ github.event.pull_request.head.sha }}
