@@ -21,4 +21,4 @@ jobs:
       - name: Sonarcloud Scan
         uses: ./.github/actions/sonarcloud
         with:
-          sonar-token: ${{ secrets.SONARCLOUD_USER_TOKEN }}
+          sonar-token: ${{ secrets.SONAR_TOKEN }}
