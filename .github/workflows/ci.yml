@@ -18,6 +18,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Debug Token
+        run: |
+          if [ -z "${{ secrets.SONAR_TOKEN }}" ]; then
+            echo "ERROR: SONAR_TOKEN está vacío"
+          else
+            echo "SONAR_TOKEN existe (primeros 10 caracteres): $(echo ${{ secrets.SONAR_TOKEN }} | cut -c1-10)..."
+            echo "Longitud del token: $(echo -n ${{ secrets.SONAR_TOKEN }} | wc -c)"
+          fi
+
       - name: Sonarcloud Scan
         uses: ./.github/actions/sonarcloud
         with:
