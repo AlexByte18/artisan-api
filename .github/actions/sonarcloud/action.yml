@@ -15,6 +15,3 @@ runs:
       uses: SonarSource/sonarqube-scan-action@v4.2.0
       env:
         SONAR_TOKEN: ${{inputs.sonar-token}}
-      with:
-        args: >
-          -Dsonar.scm.revision=${{ github.event.pull_request.head.sha }}
