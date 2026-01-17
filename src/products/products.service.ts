@@ -7,6 +7,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { validate as isUUID } from 'uuid';
 import { Product, ProductImage } from './entities';
 import { User } from 'src/auth/entities/user.entity';
+import { FilesService } from 'src/files/files.service';
 @Injectable()
 export class ProductsService {
 
@@ -21,6 +22,8 @@ export class ProductsService {
     private  readonly productImageRepository: Repository<ProductImage>,
 
     private readonly dataSource: DataSource,
+
+    private readonly filesService: FilesService,
 
   ){} 
 
@@ -55,7 +58,7 @@ export class ProductsService {
 
     return products.map( product => ({
       ...product,
-      images: product.images.map( img => img.url )
+      images: product.images.map( img => this.filesService.getUrlProductImage(img.url))
     }))
   }
 
